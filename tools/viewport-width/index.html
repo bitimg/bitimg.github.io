@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="force-scroll no-js" lang="en">
+<head>
+    <title>Viewport Width</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <link rel="shortcut icon" href="/favicon.ico?v2" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="robots" content="noodp,noydir" />
+    <meta name="description" content="Do you know what size your viewport width or height is? Learn how to get the correct values using JavaScript." />
+    <link rel="canonical" href="http://matanich.com" />
+    <meta property='og:locale' content='en_US' />
+    <meta property='og:type' content='website' />
+    <meta property='og:title' content='Tyson Matanich' />
+    <meta property='og:url' content='http://matanich.com' />
+    <meta property='og:site_name' content='Tyson Matanich' />
+    <style type="text/css">@-webkit-viewport{width:device-width;}@-moz-viewport{width:device-width;}@-ms-viewport{width:device-width;}@-o-viewport{width:device-width;}@viewport{width:device-width;}</style>
+<link rel="stylesheet" type="text/css" href="./css/main.css" />    <script>
+        if (navigator.userAgent.match(/IEMobile\/1[0-1]\./)) {
+            var msViewportStyle = document.createElement("style");
+            msViewportStyle.appendChild(document.createTextNode("@-ms-viewport{width:auto!important}"));
+            document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+        }
+    </script>
+</head>
+<body>
+
+<h1>What size is your viewport width?</h1>
+<div>
+    <noscript><p>This page requires JavaScript, sorry.</p></noscript>
+    <p class="no-media-query">Your browser does not support CSS media queries.</p>
+    <p class="no-resize">Your browser does not support resize events.</p>
+    <div class="loading">Calculating...</div>
+    <div  class="viewport-diff">
+        <p>Select the correct answer:</p>
+        <div id="options">
+            <a href="#" class="option">
+                <span class="value" id="option1"></span>
+                <span class="details">
+                    <ul>
+                        <li>documentElement.clientWidth;</li>
+                        <li>$(window).width();</li>
+                    </ul>
+                </span>
+                <span class="icon"></span>
+            </a>
+            <a href="#" class="option">
+                <span class="value" id="option2"></span>
+                <span class="details">
+                    <ul>
+                        <li>window.innerWidth;</li>
+                    </ul>
+                </span>
+                <span class="icon"></span>
+            </a>
+        </div>
+    </div>
+    <div class="viewport-same">
+        <div class="option">
+            <span class="value" id="answer"></span>
+            <span class="details">
+                <ul>
+                    <li>window.innerWidth;</li>
+                    <li>documentElement.clientWidth;</li>
+                    <li>$(window).width();</li>
+                </ul>
+            </span>
+            <span class="icon"></span>
+        </div>
+    </div>
+
+    <p>Try viewing the page in different browsers to see how each handles viewport size. Specifically, try it out in Internet Explorer 9, Firefox, Chrome for Windows, Safari for Windows, and Opera.</p>
+</div>
+
+<a href="#" class="toggle-scroll">Toggle Scroll Bars</a>
+
+<h2>Get the correct value using JavaScript</h2>
+<p><a href="http://matanich.com/2013/01/07/viewport-size">Learn more</a> about the CSS viewport and <a href="http://github.com/tysonmatanich/viewportSize">download the script</a> to properly detect it.</p>
+<code>var width = viewportSize.getWidth();</code>
+<p>Copy from <a href="http://twitter.com/tysonmatanich">@tysonmatanich</a></p>
+
+<script type="text/javascript" src="./js/viewportsize.js"></script>
+<script type="text/javascript" src="./js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+    $("html").removeClass("no-js");
+
+    if (window.innerWidth !== undefined && window.innerWidth != document.documentElement.scrollWidth) {
+        $("a.toggle-scroll").show().click(function (e) {
+            e.preventDefault();
+            $("html").toggleClass("force-scroll");
+            updateValues();
+        });
+    }
+    else if (window.innerWidth !== undefined && window.innerWidth == document.documentElement.scrollWidth) {
+        $("html").addClass("no-layout-scroll");
+    }
+
+    var updateValues = function () {
+        var viewportWidth = window.viewportSize.getWidth();
+        $("#answer").html(viewportWidth + "px");
+
+        var $option1 = $("#option1");
+        var $option2 = $("#option2");
+        if (document.documentElement.clientWidth < window.innerWidth) {
+            $option1.html(document.documentElement.clientWidth + "px");
+            $option2.html(window.innerWidth + "px");
+
+            $option1.parent().removeClass("is-correct");
+            $option2.parent().removeClass("is-correct");
+
+            if (document.documentElement.clientWidth == viewportWidth) {
+                $option1.parent().addClass("is-correct");
+            }
+            if (window.innerWidth == viewportWidth) {
+                $option2.parent().addClass("is-correct");
+            }
+            $(".loading, .viewport-same").hide();
+            $(".viewport-diff").show();
+        }
+        else if (document.documentElement.clientWidth > window.innerWidth) {
+            $option1.html(window.innerWidth + "px");
+            $option2.html(document.documentElement.clientWidth + "px");
+
+            $option1.parent().removeClass("is-correct");
+            $option2.parent().removeClass("is-correct");
+
+            if (document.documentElement.clientWidth == viewportWidth) {
+                $option2.parent().addClass("is-correct");
+            }
+            if (window.innerWidth == viewportWidth) {
+                $option1.parent().addClass("is-correct");
+            }
+            $(".loading, .viewport-same").hide();
+            $(".viewport-diff").show();
+        }
+        else if (document.documentElement.clientWidth == window.innerWidth) {
+            $(".loading, .viewport-diff").hide();
+            
+            var msg;
+            if ($("html").hasClass("no-layout-scroll")) {
+                msg = "Your browser's scroll bars don't consume layout space. Try it out in one that does and make your best guess.";
+            }
+            else {
+                msg = "No scroll bars simplifies things a bit.";
+            }
+            if ($(".viewport-same > p").size() < 1) {
+                $(".viewport-same").prepend("<p>" + msg + "</p>")
+            }
+            else {
+                $(".viewport-same > p").first().text(msg);
+            }
+
+            $(".viewport-same").show();
+        }
+        else {
+            $(".loading, .viewport-diff").hide();
+            if (window.innerWidth === undefined) {
+                $("li:contains(window.innerWidth;)").css("text-decoration", "line-through");
+            }
+            $(".viewport-same > p").hide();
+            $(".viewport-same").show();
+        }
+    }
+
+    if (window.addEventListener) {
+        window.addEventListener("resize", updateValues, false);
+        window.addEventListener("DOMContentLoaded", updateValues, false);
+        window.addEventListener("load", updateValues, false);
+    }
+    else if (window.attachEvent) {
+        window.attachEvent("onload", updateValues);
+        $("html").addClass("no-resize");
+    }
+
+    $("a.option").click(function (e) {
+        e.preventDefault();
+        if (!$("#options").hasClass("show-results")) {
+            $("#options").addClass("show-results");
+        }
+    });
+</script>
+</body>
+</html>
