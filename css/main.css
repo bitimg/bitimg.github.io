@@ -155,6 +155,7 @@ a:hover {
 }
 #features ul li img {
   width: 90%;
+  border: solid 1px #979797
 }
 #features ul li p {
   text-align: center;
